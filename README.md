@@ -65,10 +65,7 @@ To run this chat application locally, follow these steps:
 
 3.  **Start the development servers:**
 
-        npm run dev  # or yarn dev, pnpm dev, bun dev (if you have a dev script defined)
-        # or potentially: node index.js or npm start (depending on your server script)
-
-
+        npm run dev # or npm run dev:socket (recommended)
 
         The Next.js development server typically runs on http://localhost:3000.
 
