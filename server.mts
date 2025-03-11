@@ -15,9 +15,9 @@ app.prepare().then(() => {
 
   io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
-
     socket.on("join-room", ({ room, username }) => {
       socket.join(room);
+      socket.data = { room, username };
       console.log(`User ${username} joined room ${room}`);
       socket
         .to(room)
@@ -30,8 +30,24 @@ app.prepare().then(() => {
     });
 
     socket.on("disconnect", () => {
-      console.log(`User disconnected: ${socket.id}`);
+      const { room, username } = socket.data;
+      socket.disconnect(room);
+      console.log(
+        `User ${username} disconnected from the room ${room}: ${socket.id}`
+      );
+      socket
+        .to(room)
+        .emit("disconnect", `User ${username} left the room ${room}`);
     });
+  });
+
+  io.off("disconnect", (socket) => {
+    const { room, username } = socket.data;
+    console.log(`User disconnected: ${socket.id}`);
+    socket.disconnect(room);
+    socket
+      .to(room)
+      .emit("disconnect", `User ${username} left the room ${room}`);
   });
 
   httpServer.listen(port, () => {

@@ -7,7 +7,7 @@ interface ChatMessageProps {
 }
 
 const ChatMessage = ({ sender, message, isOwnMessage }: ChatMessageProps) => {
-  const isSystemMessage = sender === "System";
+  const isSystemMessage = sender === "system";
   return (
     <div
       className={`flex ${
@@ -19,12 +19,12 @@ const ChatMessage = ({ sender, message, isOwnMessage }: ChatMessageProps) => {
       } mb-3`}
     >
       <div
-        className={`max-w-xs px-4 py-2 rounded-lg ${
+        className={`max-w-xs px-[80px] py-[5px] rounded-lg ${
           isSystemMessage
-            ? "bg-gray-800 text-white text-center text-xs"
+            ? "bg-black text-white text-center text-xs"
             : isOwnMessage
-            ? "bg-blue-500 text-white"
-            : "bg-white text-black"
+            ? "bg-blue-400 text-white"
+            : "bg-[rgb(138, 44, 245)] text-white"
         }`}
       >
         {!isSystemMessage && <p className="text-sm font-bold">{sender}</p>}

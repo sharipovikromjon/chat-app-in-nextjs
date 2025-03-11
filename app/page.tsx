@@ -6,7 +6,8 @@ import ChatMessage from "@/components/ChatMessage";
 import { socket } from "@/lib/socketClient";
 
 export default function Home() {
-  const handleJoinRoom = () => {
+  const handleJoinRoom = (e: React.FormEvent) => {
+    e.preventDefault();
     if (userName && room) {
       socket.emit("join-room", { room, username: userName });
       setJoined(true);
