@@ -17,17 +17,19 @@ export default function Home() {
   const [room, setRoom] = useState("");
   const [joined, setJoined] = useState(false);
   const [messages, setMessages] = useState<
-    { sender: string; message: string }[]
+    { sender: string; message: string; timestamp: string }[]
   >([]);
   const [userName, setUserName] = useState("");
 
+  // Option 1
   useEffect(() => {
     socket.on("message", (data) => {
       setMessages((prev) => [...prev, data]);
     });
 
     socket.on("user_joined", (message) => {
-      setMessages((prev) => [...prev, { sender: "system", message }]);
+      const timestamp = new Date().toISOString();
+      setMessages((prev) => [...prev, { sender: "system", message: `${message}`, timestamp }]);
     });
 
     return () => {
@@ -36,10 +38,25 @@ export default function Home() {
     };
   }, []);
 
+
+  /* Option 2 */
+  /*useEffect(() => {
+    socket.on("user_joined", ({ userName, room, joinTime }) => {
+      setMessages((prev) => [
+        ...prev,
+        { sender: "system", message: `User ${userName} joined the room ${room} at ${joinTime}`, timestamp: joinTime },
+      ]);
+    });
+    return () => {
+      socket.off("user_joined");
+    };
+  }, []);*/
+
   const handleSendMessage = (message: string) => {
-    const daa = { room, message, sender: userName };
-    setMessages((prev) => [...prev, { sender: userName, message }]);
-    socket.emit("message", daa);
+    const timestamp = new Date().toISOString();
+    const data = { room, message, sender: userName, timestamp};
+    setMessages((prev) => [...prev, { sender: userName, message, timestamp }]);
+    socket.emit("message", data);
   };
 
   return (
@@ -65,7 +82,7 @@ export default function Home() {
           />
           <button
             onClick={handleJoinRoom}
-            className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition duration-300"
+            className="px-4 py-2  bg-[#00A3FF] text-white rounded-lg hover:bg-black transition linear duration-400"
           >
             Join Room
           </button>
@@ -75,13 +92,15 @@ export default function Home() {
           <h1 className="mb-4 font-bold text-[32px] text-center">
             Room <span className="text-white">{room}</span>
           </h1>
-          <div className="h-[500px] overflow-y-auto p-4 mb-4 bg-gray-200 border-2 rounded-lg">
+          <div className="h-[500px]
+           overflow-y-auto p-4 mb-4 bg-[#181818] border-2 rounded-lg">
             {messages.map((msg, index) => (
               <ChatMessage
                 key={index}
                 sender={msg.sender}
                 message={msg.message}
                 isOwnMessage={msg.sender === userName}
+                timestamp={msg.timestamp}
               />
             ))}
           </div>

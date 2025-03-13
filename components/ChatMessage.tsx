@@ -4,9 +4,11 @@ interface ChatMessageProps {
   sender: string;
   message: string;
   isOwnMessage: boolean;
+  timestamp: string;
 }
 
-const ChatMessage = ({ sender, message, isOwnMessage }: ChatMessageProps) => {
+const ChatMessage = ({ sender, message, isOwnMessage, timestamp }: ChatMessageProps) => {
+  console.log(timestamp)
   const isSystemMessage = sender === "system";
   return (
     <div
@@ -18,17 +20,27 @@ const ChatMessage = ({ sender, message, isOwnMessage }: ChatMessageProps) => {
           : "justify-start"
       } mb-3`}
     >
-      <div
-        className={`max-w-xs px-[80px] py-[5px] rounded-lg ${
-          isSystemMessage
-            ? "bg-black text-white text-center text-xs"
-            : isOwnMessage
-            ? "bg-blue-400 text-white"
-            : "bg-[rgb(138, 44, 245)] text-white"
-        }`}
-      >
-        {!isSystemMessage && <p className="text-sm font-bold">{sender}</p>}
-        <p>{message}</p>
+      <div className="flex flex-col gap-y-[12px]">
+        <>
+          {!isSystemMessage && (
+            <div className="flex gap-x-[16px] items-center">
+              <p className="text-sm font-bold text-[#DADADA]">{sender}</p>
+              <p className="text-[#A0A0A0] text-[12px]">{new Date(timestamp).toLocaleString()}</p>
+            </div>
+          )}
+        </>
+        <div
+          className={`flex items-center px-[14px] py-[8px] rounded-tr-xl rounded-br-xl rounded-bl-xl border border-[#323232] bg-[#292929] ${
+            isSystemMessage
+              ? "bg-black text-white text-center text-xs"
+              : isOwnMessage
+              ? "bg-[#292929] text-white"
+              : "bg-blue-400 text-white "
+          }`}
+        >
+          
+          <p>{message}</p>
+        </div>
       </div>
     </div>
   );
