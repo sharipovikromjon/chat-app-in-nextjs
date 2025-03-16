@@ -89,9 +89,15 @@ export default function Home() {
         </div>
       ) : (
         <div className="w-full max-w-3xl mx-auto">
+          <div className="flex items-center justify-center gap-[20px]">
+
           <h1 className="mb-4 font-bold text-[32px] text-center">
-            Room <span className="text-white">{room}</span>
+            User: <span className="text-white">{userName}</span>
           </h1>
+          <h1 className="mb-4 font-bold text-[32px] text-center">
+            Room: <span className="text-white">{room}</span>
+          </h1>
+          </div>
           <div className="h-[500px]
            overflow-y-auto p-4 mb-4 bg-[#181818] border-2 rounded-lg">
             {messages.map((msg, index) => (
