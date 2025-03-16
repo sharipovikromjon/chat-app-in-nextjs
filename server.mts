@@ -17,18 +17,38 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
     socket.on("join-room", ({ room, username }) => {
-      const joinTime = new Date().toISOString();  
+      const joinTime = new Date();
+      const formattedJoinTime =
+        joinTime.toLocaleString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }) +
+        " | " +
+        joinTime.toLocaleDateString("en-US", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
       socket.join(room);
-      socket.data = { room, username, joinTime };
-      console.log(`User ${username} joined room ${room} at ${joinTime}`);
+      socket.data = { room, username, joinTime: formattedJoinTime };
+      console.log(
+        `User ${username} joined room ${room} at ${formattedJoinTime}`
+      );
       socket
         .to(room)
-        .emit("user_joined", {username, room, joinTime});
+        .emit(
+          "user_joined",
+          `User "${username}" joined the room "${room}" at ${formattedJoinTime}`
+        );
     });
     // `${username} joined the room ${room}`
 
     socket.on("message", ({ room, message, sender, timestamp }) => {
-      console.log(`Message from sender ${sender} in room ${room} at ${timestamp}: ${message}`);
+      console.log(
+        `Message from sender ${sender} in room ${room} at ${timestamp}: ${message}`
+      );
       socket.to(room).emit("message", { sender, message, timestamp });
     });
 
