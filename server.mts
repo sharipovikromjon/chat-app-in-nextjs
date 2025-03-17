@@ -10,6 +10,8 @@ const port = parseInt(process.env.PORT || "3000", 10);
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
+const messageHistory: { [key: string]: { sender: string; message: string; timestamp: string }[] } = {};
+
 app.prepare().then(() => {
   const httpServer = createServer(handle);
   const io = new Server(httpServer);
@@ -36,6 +38,12 @@ app.prepare().then(() => {
       console.log(
         `User ${username} joined room ${room} at ${formattedJoinTime}`
       );
+      // Send message history to the new user
+      if (messageHistory[room]) {
+        socket.emit("message_history", messageHistory[room]);
+      } else {
+        messageHistory[room] = [];
+      }
       socket
         .to(room)
         .emit(
@@ -49,20 +57,22 @@ app.prepare().then(() => {
       console.log(
         `Message from sender ${sender} in room ${room} at ${timestamp}: ${message}`
       );
-      socket.to(room).emit("message", { sender, message, timestamp });
+      const newMessage = { sender, message, timestamp };
+      messageHistory[room].push(newMessage);
+      socket.to(room).emit("message", newMessage);
     });
-
-    // socket.on("disconnect", () => {
-    //   const { room, username } = socket.data;
-    //   socket.disconnect(room);
-    //   console.log(
-    //     `User ${username} disconnected from the room ${room}: ${socket.id}`
-    //   );
-    //   socket
-    //     .to(room)
-    //     .emit("disconnect", `User ${username} left the room ${room}`);
-    // });
   });
+
+  // socket.on("disconnect", () => {
+  //   const { room, username } = socket.data;
+  //   socket.disconnect(room);
+  //   console.log(
+  //     `User ${username} disconnected from the room ${room}: ${socket.id}`
+  //   );
+  //   socket
+  //     .to(room)
+  //     .emit("disconnect", `User ${username} left the room ${room}`);
+  // });
 
   // io.off("disconnect", (socket) => {
   //   const { room, username } = socket.data;

@@ -7,25 +7,32 @@ interface ChatMessageProps {
   timestamp: string;
 }
 
-const ChatMessage = ({ sender, message, isOwnMessage, timestamp }: ChatMessageProps) => {
-  console.log(timestamp)
+const ChatMessage = ({
+  sender,
+  message,
+  isOwnMessage,
+  timestamp,
+}: ChatMessageProps) => {
+  console.log(timestamp);
   const isSystemMessage = sender === "system";
   return (
     <div
-      className={`flex ${
+      className={`flex mb-3 ${
         isSystemMessage
           ? "justify-center"
           : isOwnMessage
           ? "justify-end"
           : "justify-start"
-      } mb-3`}
+      } `}
     >
       <div className="flex flex-col gap-y-[12px]">
         <>
           {!isSystemMessage && (
             <div className="flex gap-x-[16px] items-center">
               <p className="text-sm font-bold text-[#DADADA]">{sender}</p>
-              <p className="text-[#A0A0A0] text-[12px]">{new Date(timestamp).toLocaleString()}</p>
+              <p className="text-[#A0A0A0] text-[12px]">
+                {new Date(timestamp).toLocaleString()}
+              </p>
             </div>
           )}
         </>
@@ -38,7 +45,6 @@ const ChatMessage = ({ sender, message, isOwnMessage, timestamp }: ChatMessagePr
               : "bg-blue-400 text-white "
           }`}
         >
-          
           <p>{message}</p>
         </div>
       </div>

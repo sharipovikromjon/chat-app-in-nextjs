@@ -23,21 +23,27 @@ export default function Home() {
 
   // Option 1
   useEffect(() => {
+    socket.on("message_history", (data) => {
+      setMessages(data);
+    });
     socket.on("message", (data) => {
       setMessages((prev) => [...prev, data]);
     });
 
     socket.on("user_joined", (message) => {
-      const timestamp = new Date().toISOString();
-      setMessages((prev) => [...prev, { sender: "system", message: `${message}`, timestamp }]);
+      const timestamp = new Date().toLocaleString();
+      setMessages((prev) => [
+        ...prev,
+        { sender: "system", message: `${message}`, timestamp },
+      ]);
     });
 
     return () => {
+      socket.off("message_history");
       socket.off("user_joined");
       socket.off("message");
     };
   }, []);
-
 
   /* Option 2 */
   /*useEffect(() => {
@@ -54,7 +60,7 @@ export default function Home() {
 
   const handleSendMessage = (message: string) => {
     const timestamp = new Date().toISOString();
-    const data = { room, message, sender: userName, timestamp};
+    const data = { room, message, sender: userName, timestamp };
     setMessages((prev) => [...prev, { sender: userName, message, timestamp }]);
     socket.emit("message", data);
   };
@@ -88,18 +94,19 @@ export default function Home() {
           </button>
         </div>
       ) : (
-        <div className="w-full max-w-3xl mx-auto">
+        <div className="w-full max-w-6xl mx-auto">
           <div className="flex items-center justify-center gap-[20px]">
-
-          <h1 className="mb-4 font-bold text-[32px] text-center">
-            User: <span className="text-white">{userName}</span>
-          </h1>
-          <h1 className="mb-4 font-bold text-[32px] text-center">
-            Room: <span className="text-white">{room}</span>
-          </h1>
+            <h1 className="mb-4 font-bold text-[32px] text-center">
+              User: <span className="text-white">{userName}</span>
+            </h1>
+            <h1 className="mb-4 font-bold text-[32px] text-center">
+              Room: <span className="text-white">{room}</span>
+            </h1>
           </div>
-          <div className="h-[500px]
-           overflow-y-auto p-4 mb-4 bg-[#181818] border-2 rounded-lg">
+          <div
+            className="h-[500px]
+           overflow-y-auto p-4 mb-4 bg-[#181818] border-2 rounded-lg"
+          >
             {messages.map((msg, index) => (
               <ChatMessage
                 key={index}
