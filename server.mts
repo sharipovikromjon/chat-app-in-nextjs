@@ -61,7 +61,14 @@ app.prepare().then(() => {
       messageHistory[room].push(newMessage);
       socket.to(room).emit("message", newMessage);
     });
+
+    // logout
+    socket.on("leave-room", ({room, username}) => {
+      socket.leave(room);
+      console.log(`User ${username} left the room ${room}`);
+      socket.to(room).emit("user_left", `User ${username} left the room ${room}`);
   });
+});
 
   // socket.on("disconnect", () => {
   //   const { room, username } = socket.data;
