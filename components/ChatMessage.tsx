@@ -13,7 +13,7 @@ const ChatMessage = ({
   isOwnMessage,
   timestamp,
 }: ChatMessageProps) => {
-  // console.log(timestamp);
+  console.log(timestamp);
   const isSystemMessage = sender === "system";
   return (
     <div
