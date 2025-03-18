@@ -59,7 +59,7 @@ export default function Home() {
   }, []);*/
 
   const handleSendMessage = (message: string) => {
-    const timestamp = new Date().toISOString();
+    const timestamp = new Date().toLocaleString();
     const data = { room, message, sender: userName, timestamp };
     setMessages((prev) => [...prev, { sender: userName, message, timestamp }]);
     socket.emit("message", data);
