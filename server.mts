@@ -58,7 +58,16 @@ app.prepare().then(() => {
         `Message from sender ${sender} in room ${room} at ${timestamp}: ${message}`
       );
       const newMessage = { sender, message, timestamp };
+      // option 1
+      // messageHistory[room].push(newMessage);
+      // option 2 with conditional
+      if(!messageHistory[room]) {
+        messageHistory[room] = [];
+      }
       messageHistory[room].push(newMessage);
+      // if(messageHistory[room]) {
+      //   messageHistory[room].push(newMessage);
+      // }
       socket.to(room).emit("message", newMessage);
     });
 

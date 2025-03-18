@@ -7,27 +7,27 @@ import ChatMessage from "@/components/ChatMessage";
 import { socket } from "@/lib/socketClient";
 //React Toastify
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Home() {
+  const [room, setRoom] = useState("");
+  const router = useRouter();
+  const [joined, setJoined] = useState(false);
+  const [messages, setMessages] = useState<
+    { sender: string; message: string; timestamp: string }[]
+  >([]);
+  const [userName, setUserName] = useState("");
+  console.log(userName);
   const handleJoinRoom = (e: React.FormEvent) => {
     e.preventDefault();
     if (userName && room) {
       socket.emit("join-room", { room, username: userName });
       setJoined(true);
       // clear inputs
-      setUserName('');
-      setRoom('');
+      setUserName("");
+      setRoom("");
     }
   };
-
-  const router = useRouter();
-  const [room, setRoom] = useState("");
-  const [joined, setJoined] = useState(false);
-  const [messages, setMessages] = useState<
-    { sender: string; message: string; timestamp: string }[]
-  >([]);
-  const [userName, setUserName] = useState("");
 
   // Option 1
   useEffect(() => {
@@ -38,24 +38,32 @@ export default function Home() {
       setMessages((prev) => [...prev, data]);
     });
 
-    socket.on("user_joined", (message) => {
+    socket.on("user_joined", ({ username, room, joinTime }) => {
       const timestamp = new Date().toLocaleString();
       setMessages((prev) => [
         ...prev,
-        { sender: "system", message: `${message}`, timestamp },
+        {
+          sender: "system",
+          message: `User ${username} joined the room ${room} at ${joinTime}`,
+          timestamp: joinTime,
+        },
       ]);
     });
     socket.on("user_left", (message) => {
       setMessages((prev) => [
         ...prev,
-        { sender: "system", message: `${message}`, timestamp: new Date().toLocaleString() },
+        {
+          sender: "system",
+          message: `${message}`,
+          timestamp: new Date().toLocaleString(),
+        },
       ]);
     });
 
     return () => {
       socket.off("message_history");
-      socket.off("user_joined");
       socket.off("message");
+      socket.off("user_joined");
       socket.off("user_left");
     };
   }, []);
@@ -74,7 +82,7 @@ export default function Home() {
   }, []);*/
 
   const handleSendMessage = (message: string) => {
-    const timestamp = new Date().toISOString();
+    const timestamp = new Date().toLocaleString();
     const data = { room, message, sender: userName, timestamp };
     setMessages((prev) => [...prev, { sender: userName, message, timestamp }]);
     socket.emit("message", data);
@@ -130,14 +138,23 @@ export default function Home() {
             <div className="flex items-center gap-x-[18px]">
               <div className="w-[58px] h-[58px] rounded-[58px] border border-[#434343]"></div>
               <div className="flex flex-col gap-y-[3px]">
-                <h1 className="text-[#F0F0F0] text-[20px] font-[500px]">{userName}</h1>
+                <h1 className="text-[#F0F0F0] text-[20px] font-[500px]">
+                  {userName}
+                </h1>
                 <p className="text-[#00A3FF]">online</p>
               </div>
             </div>
             <div>
-              <h1 className="text-gray-500 text-[22px] font-[600px]">Room: <span className="text-[#00A3FF]">{room}</span></h1>
+              <h1 className="text-gray-500 text-[22px] font-[600px]">
+                Room: <span className="text-[#00A3FF]">{room}</span>
+              </h1>
             </div>
-            <button className="py-[11px] px-[18px] bg-red-500 text-white opacity-65 hover:opacity-100" onClick={handleLogout}>Logout</button>
+            <button
+              className="py-[11px] px-[18px] bg-red-500 text-white opacity-65 hover:opacity-100"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
           </div>
           <div
             className="h-[500px]
