@@ -27,11 +27,11 @@ This project was developed as part of a **System Programming course** to:
 
 - **Frontend (GUI):**
   - [Next.js](https://nextjs.org) - A React framework for building performant and user-friendly web applications.
-  - [TypeScript](https://www.google.com/url?sa=E&source=gmail&q=https://www.typescriptlang.org/) - For type-safe JavaScript development in the frontend.
-  - [Tailwind CSS](https://www.google.com/url?sa=E&source=gmail&q=https://tailwindcss.com) - A utility-first CSS framework for rapid and consistent UI styling.
+  - [TypeScript](https://www.typescriptlang.org/) - For type-safe JavaScript development in the frontend.
+  - [Tailwind CSS](https://tailwindcss.com) - A utility-first CSS framework for rapid and consistent UI styling.
 - **Backend:**
-  - [Node.js](https://www.google.com/url?sa=E&source=gmail&q=https://nodejs.org) - JavaScript runtime environment for building the server-side application.
-  - [Socket.IO](https://www.google.com/url?sa=E&source=gmail&q=https://socket.io) - JavaScript library for real-time, bidirectional communication over WebSockets.
+  - [Node.js](https://nodejs.org) - JavaScript runtime environment for building the server-side application.
+  - [Socket.IO](https://socket.io) - JavaScript library for real-time, bidirectional communication over WebSockets.
 
 ## Future Enhancements (Planned Features):
 
@@ -53,35 +53,40 @@ For a more detailed overview of the project's initial goals and planned features
 
 To run this chat application locally, follow these steps:
 
-1.  **Clone the repository:**
+1. **Clone the repository:**
 
+    ```sh
     git clone https://github.com/sharipovikromjon/chat-app-in-nextjs.git
-
     cd chat-app-in-nextjs
+    ```
 
-2.  **Install dependencies:**
+2. **Install dependencies:**
 
+    ```sh
     npm install # or yarn install, pnpm install, bun install
+    ```
 
-3.  **Start the development servers:**
+3. **Start the development servers:**
 
-        npm run dev # or npm run dev:socket (recommended)
+    ```sh
+    npm run dev:socket
+    ```
 
-        The Next.js development server typically runs on http://localhost:3000.
+    The Next.js development server typically runs on [http://localhost:3000](http://localhost:3000).
 
-4.  **Access the application:** Open your web browser and go to [http://localhost:3000](http://localhost:3000) (or the port where your Next.js app is running). You should see the chat application interface.
+4. **Access the application:** Open your web browser and go to [http://localhost:3000](http://localhost:3000) (or the port where your Next.js app is running). You should see the chat application interface.
 
-5.  **Start chatting\!** Open the application in multiple browser windows or on different devices on the same network to test the real-time chat functionality.
+5. **Start chatting!** Open the application in multiple browser windows or on different devices on the same network to test the real-time chat functionality.
 
 ## Learn More
 
 To learn more about the technologies used in this project, refer to their official documentation:
 
 - [Next.js Documentation](https://nextjs.org/docs)
-- [React Documentation](https://www.google.com/url?sa=E&source=gmail&q=https://reactjs.org/docs)
-- [Tailwind CSS Documentation](https://www.google.com/url?sa=E&source=gmail&q=https://tailwindcss.com/docs)
-- [Socket.IO Documentation](https://www.google.com/url?sa=E&source=gmail&q=https://socket.io/docs/)
-- [Node.js Documentation](https://www.google.com/url?sa=E&source=gmail&q=https://nodejs.org/en/docs/)
+- [React Documentation](https://reactjs.org/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Socket.IO Documentation](https://socket.io/docs/)
+- [Node.js Documentation](https://nodejs.org/en/docs/)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
 
 You can also explore the [Next.js GitHub repository](https://github.com/vercel/next.js) and the [Socket.IO GitHub repository](https://github.com/socketio/socket.io) for more in-depth information and to contribute to these projects.
