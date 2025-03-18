@@ -37,9 +37,9 @@ const ChatMessage = ({
           )}
         </>
         <div
-          className={`flex items-center px-[14px] py-[8px] rounded-tr-xl rounded-br-xl rounded-bl-xl border border-[#323232] bg-[#00A3FF] ${
+          className={`flex items-center px-[14px] py-[8px] rounded-tr-xl rounded-br-xl rounded-bl-xl border border-[#323232] bg-[#292929] ${
             isSystemMessage
-              ? "bg-[#00A3FF] text-[#ded4d4] text-center text-xs"
+              ? "bg-black text-white text-center text-xs"
               : isOwnMessage
               ? "bg-[#292929] text-white"
               : "bg-blue-400 text-white "

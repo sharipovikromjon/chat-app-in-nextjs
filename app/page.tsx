@@ -1,13 +1,9 @@
 "use client";
 import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ChatForm from "@/components/ChatForm";
 import ChatMessage from "@/components/ChatMessage";
 import { socket } from "@/lib/socketClient";
-//React Toastify
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"
 
 export default function Home() {
   const handleJoinRoom = (e: React.FormEvent) => {
@@ -15,13 +11,9 @@ export default function Home() {
     if (userName && room) {
       socket.emit("join-room", { room, username: userName });
       setJoined(true);
-      // clear inputs
-      setUserName('');
-      setRoom('');
     }
   };
 
-  const router = useRouter();
   const [room, setRoom] = useState("");
   const [joined, setJoined] = useState(false);
   const [messages, setMessages] = useState<
@@ -45,18 +37,11 @@ export default function Home() {
         { sender: "system", message: `${message}`, timestamp },
       ]);
     });
-    socket.on("user_left", (message) => {
-      setMessages((prev) => [
-        ...prev,
-        { sender: "system", message: `${message}`, timestamp: new Date().toLocaleString() },
-      ]);
-    });
 
     return () => {
       socket.off("message_history");
       socket.off("user_joined");
       socket.off("message");
-      socket.off("user_left");
     };
   }, []);
 
@@ -80,16 +65,8 @@ export default function Home() {
     socket.emit("message", data);
   };
 
-  const handleLogout = () => {
-    socket.emit("leave-room", { room, username: userName });
-    setJoined(false);
-    toast.success("Successfully Logged out");
-    router.push("/");
-  };
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-500">
-      <ToastContainer />
       {!joined ? (
         <div className="flex w-full max-w-3xl mx-auto flex-col items-center bg-white p-8 rounded-lg shadow-lg">
           <h1 className="mb-4 text-2xl font-bold">Join a Room</h1>
@@ -118,30 +95,17 @@ export default function Home() {
         </div>
       ) : (
         <div className="w-full max-w-6xl mx-auto">
-          {/* <div className="flex items-center justify-center gap-[20px]">
+          <div className="flex items-center justify-center gap-[20px]">
             <h1 className="mb-4 font-bold text-[32px] text-center">
               User: <span className="text-white">{userName}</span>
             </h1>
             <h1 className="mb-4 font-bold text-[32px] text-center">
               Room: <span className="text-white">{room}</span>
             </h1>
-          </div> */}
-          <div className="flex items-center justify-between bg-[#121212] py-[16px] px-[46px] border-b border-[#a9a9a9]">
-            <div className="flex items-center gap-x-[18px]">
-              <div className="w-[58px] h-[58px] rounded-[58px] border border-[#434343]"></div>
-              <div className="flex flex-col gap-y-[3px]">
-                <h1 className="text-[#F0F0F0] text-[20px] font-[500px]">{userName}</h1>
-                <p className="text-[#00A3FF]">online</p>
-              </div>
-            </div>
-            <div>
-              <h1 className="text-gray-500 text-[22px] font-[600px]">Room: <span className="text-[#00A3FF]">{room}</span></h1>
-            </div>
-            <button className="py-[11px] px-[18px] bg-red-500 text-white opacity-65 hover:opacity-100" onClick={handleLogout}>Logout</button>
           </div>
           <div
             className="h-[500px]
-           overflow-y-auto p-4 mb-4 bg-[#181818] border-2"
+           overflow-y-auto p-4 mb-4 bg-[#181818] border-2 rounded-lg"
           >
             {messages.map((msg, index) => (
               <ChatMessage
