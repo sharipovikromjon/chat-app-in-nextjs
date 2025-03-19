@@ -4,7 +4,8 @@ import { useState } from "react";
 import ChatForm from "@/components/ChatForm";
 import ChatMessage from "@/components/ChatMessage";
 import { socket } from "@/lib/socketClient";
-
+import Image from "next/image";
+import moreIcon from '../public/moreIcon2.svg';
 export default function Home() {
   const handleJoinRoom = (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,17 +96,27 @@ export default function Home() {
         </div>
       ) : (
         <div className="w-full max-w-6xl mx-auto">
-          <div className="flex items-center justify-center gap-[20px]">
+          {/* <div className="flex items-center justify-center gap-[20px]">
             <h1 className="mb-4 font-bold text-[32px] text-center">
               User: <span className="text-white">{userName}</span>
             </h1>
             <h1 className="mb-4 font-bold text-[32px] text-center">
               Room: <span className="text-white">{room}</span>
             </h1>
+          </div> */}
+          <div className="flex items-center justify-between bg-[#121212] py-[18px] px-[46px] border-b-[1px] border-[#303030]">
+            <div className="flex items-center gap-x-[18px]">
+              <div className="w-[58px] h-[58px] rounded-[58px] border-[1px] border-[#434343]"></div>
+              <div className="flex flex-col gap-y-[3px]">
+                <h1 className="text-[#F0F0F0] text-[20px] font-[500px]">{userName}</h1>
+                <p className="text-[#00A3FF]">Online</p>
+              </div>
+            </div>
+            <Image className="w-[40px] h-[40px]" src={moreIcon} alt="Settings"/>
           </div>
           <div
             className="h-[500px]
-           overflow-y-auto p-4 mb-4 bg-[#181818] border-2 rounded-lg"
+           overflow-y-auto p-4 bg-[#181818] border-2"
           >
             {messages.map((msg, index) => (
               <ChatMessage

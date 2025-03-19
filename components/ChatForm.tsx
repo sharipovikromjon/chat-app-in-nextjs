@@ -20,7 +20,7 @@ const ChatForm = ({
   return (
 
     <form
-      className="flex flex-col py-[10px] px-[14px] bg-[#121212] border-t border-[#303030] sm:flex-row sm:gap-2 "
+      className="flex flex-col py-[22px] px-[46px] bg-[#121212] border-t border-[#303030] sm:flex-row sm:gap-2 "
       onSubmit={handleSubmit}
     >
       <input
