@@ -112,6 +112,7 @@ export default function Home() {
                 <p className="text-[#00A3FF]">Online</p>
               </div>
             </div>
+            <p className="text-[#434343] text-[20px]">Room: <span className="text-[#f0f0f0] text-[18px]">{room}</span></p>
             <Image className="w-[40px] h-[40px]" src={moreIcon} alt="Settings"/>
           </div>
           <div
