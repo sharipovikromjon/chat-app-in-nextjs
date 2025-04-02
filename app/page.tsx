@@ -82,6 +82,22 @@ export default function Home() {
     socket.emit("message", data);
   };
 
+  // Switch between room chat
+  const handleRoomClick = (newRoom: string) => {
+    if (newRoom !== room) {
+      // Leave the current room
+      socket.emit("leave-room", {room, username: userName});
+
+      // Join the new room
+      socket.emit("join-room", { room: newRoom, username: userName });
+
+      // Update the room state
+      setRoom(newRoom);
+      setMessages([]);
+    }
+  }
+
+
   return (
     <div className="flex h-screen">
       {!joined ? (
@@ -120,10 +136,12 @@ export default function Home() {
               {joinedRooms.map((joinedRoom, index) => (
                 <li
                   key={index}
-                  className="p-2 bg-[#1E1E1E] rounded-lg cursor-pointer hover:bg-[#2E2E2E]"
+                  className={`p-2 rounded-lg cursor-pointer ${joinedRoom === room ? "bg-blue-500 text-white" : "bg-[#e1e1e] hover:bg-[#2e2e2e]"}`}
+                  onClick={() => handleRoomClick(joinedRoom)}
                 >
                   {joinedRoom}
                 </li>
+                // "p-2 bg-[#1E1E1E] rounded-lg cursor-pointer hover:bg-[#2E2E2E]"
               ))}
             </ul>
           </div>
