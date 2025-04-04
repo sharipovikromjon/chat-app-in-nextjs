@@ -1,15 +1,22 @@
 "use client";
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChatForm from "@/components/ChatForm";
 import ChatMessage from "@/components/ChatMessage";
 import { socket } from "@/lib/socketClient";
-import Image from "next/image";
-import moreIcon from "../public/moreIcon2.svg";
-export default function Home() {
-  const [joinedRooms, setJoinedRooms] = useState<string[]>([]);
-  // Load previously joined rooms from local storage when the component mounts
 
+export default function Home() {
+  // State for room and user information
+  const [room, setRoom] = useState("");
+  const [userName, setUserName] = useState("");
+  const [joined, setJoined] = useState(false);
+
+  // State for joined rooms and messages
+  const [joinedRooms, setJoinedRooms] = useState<string[]>([]);
+  const [messages, setMessages] = useState<
+    { sender: string; message: string; timestamp: string }[]
+  >([]);
+
+  // Load previously joined rooms from local storage
   useEffect(() => {
     const storedRooms = localStorage.getItem("joinedRooms");
     if (storedRooms) {
@@ -22,27 +29,30 @@ export default function Home() {
     localStorage.setItem("joinedRooms", JSON.stringify(joinedRooms));
   }, [joinedRooms]);
 
+  // Handle joining a room
   const handleJoinRoom = (e: React.FormEvent) => {
     e.preventDefault();
     if (userName && room) {
       socket.emit("join-room", { room, username: userName });
       setJoined(true);
-      setJoinedRooms((prev) => [...new Set([...prev, room])]); // Add room to joinedRooms
+      setJoinedRooms((prev) => [...new Set([...prev, room])]);
     }
   };
 
-  const [room, setRoom] = useState("");
-  const [joined, setJoined] = useState(false);
-  const [messages, setMessages] = useState<
-    { sender: string; message: string; timestamp: string }[]
-  >([]);
-  const [userName, setUserName] = useState("");
+  // Handle sending a message
+  const handleSendMessage = (message: string) => {
+    const timestamp = new Date().toISOString();
+    const data = { room, message, sender: userName, timestamp };
+    setMessages((prev) => [...prev, { sender: userName, message, timestamp }]);
+    socket.emit("message", data);
+  };
 
   // Option 1
   useEffect(() => {
     socket.on("message_history", (data) => {
       setMessages(data);
     });
+
     socket.on("message", (data) => {
       setMessages((prev) => [...prev, data]);
     });
@@ -62,42 +72,16 @@ export default function Home() {
     };
   }, []);
 
-  /* Option 2 */
-  /*useEffect(() => {
-    socket.on("user_joined", ({ userName, room, joinTime }) => {
-      setMessages((prev) => [
-        ...prev,
-        { sender: "system", message: `User ${userName} joined the room ${room} at ${joinTime}`, timestamp: joinTime },
-      ]);
-    });
-    return () => {
-      socket.off("user_joined");
-    };
-  }, []);*/
-
-  const handleSendMessage = (message: string) => {
-    const timestamp = new Date().toISOString();
-    const data = { room, message, sender: userName, timestamp };
-    setMessages((prev) => [...prev, { sender: userName, message, timestamp }]);
-    socket.emit("message", data);
-  };
-
   // Switch between room chat
   const handleRoomClick = (newRoom: string) => {
     if (newRoom !== room) {
-      // Leave the current room
-      socket.emit("leave-room", {room, username: userName});
-
-      // Join the new room
+      socket.emit("leave-room", { room, username: userName });
       socket.emit("join-room", { room: newRoom, username: userName });
-
-      // Update the room state
       setRoom(newRoom);
       setMessages([]);
     }
-  }
-
-
+  };
+  // -------------------------------------------------------
   return (
     <div className="flex h-screen">
       {!joined ? (
@@ -105,6 +89,8 @@ export default function Home() {
           <h1 className="mb-4 text-2xl font-bold">Join a Room</h1>
           {/* username */}
           <input
+            id="username"
+            name="username"
             type="text"
             placeholder="Enter your username"
             value={userName}
@@ -113,6 +99,8 @@ export default function Home() {
           />
           {/* room */}
           <input
+            id="room"
+            name="room"
             type="text"
             placeholder="Enter room name"
             value={room}
@@ -136,16 +124,18 @@ export default function Home() {
               {joinedRooms.map((joinedRoom, index) => (
                 <li
                   key={index}
-                  className={`p-2 rounded-lg cursor-pointer ${joinedRoom === room ? "bg-blue-500 text-white" : "bg-[#e1e1e] hover:bg-[#2e2e2e]"}`}
+                  className={`p-2 rounded-lg cursor-pointer ${
+                    joinedRoom === room
+                      ? "bg-blue-500 text-white"
+                      : "bg-[#e1e1e] hover:bg-[#2e2e2e]"
+                  }`}
                   onClick={() => handleRoomClick(joinedRoom)}
                 >
                   {joinedRoom}
                 </li>
-                // "p-2 bg-[#1E1E1E] rounded-lg cursor-pointer hover:bg-[#2E2E2E]"
               ))}
             </ul>
           </div>
-          {/* ------------ */}
           {/* Right Section: Chat Interface */}
           <div className="flex-1 flex flex-col w-[1236px]">
             {!joined ? (
@@ -153,6 +143,8 @@ export default function Home() {
                 <h1 className="mb-4 text-2xl font-bold">Join a Room</h1>
                 {/* Username Input */}
                 <input
+                  id="message"
+                  name="message"
                   type="text"
                   placeholder="Enter your username"
                   value={userName}
@@ -161,6 +153,8 @@ export default function Home() {
                 />
                 {/* Room Input */}
                 <input
+                  id="room"
+                  name="room"
                   type="text"
                   placeholder="Enter room name"
                   value={room}

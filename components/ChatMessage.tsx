@@ -1,5 +1,6 @@
 import React from "react";
 
+// Interface for the props
 interface ChatMessageProps {
   sender: string;
   message: string;
@@ -13,7 +14,6 @@ const ChatMessage = ({
   isOwnMessage,
   timestamp,
 }: ChatMessageProps) => {
-  // console.log(timestamp);
   const isSystemMessage = sender === "system";
   return (
     <div
