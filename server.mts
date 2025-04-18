@@ -17,6 +17,8 @@ app.prepare().then(() => {
     cors: {
       origin: "https://chat-app-delta-jet.vercel.app",
       methods: ["GET", "POST"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+      credentials: true,
     },
   });
   // allowedHeaders: ["Content-Type"],
