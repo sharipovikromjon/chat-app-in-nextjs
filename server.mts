@@ -13,7 +13,14 @@ const messageHistory: {
 
 app.prepare().then(() => {
   const httpServer = createServer(handle);
-  const io = new Server(httpServer);
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "https://chat-app-delta-jet.vercel.app",
+      methods: ["GET", "POST"],
+    },
+  });
+  // allowedHeaders: ["Content-Type"],
+  // credentials: true,
 
   io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
