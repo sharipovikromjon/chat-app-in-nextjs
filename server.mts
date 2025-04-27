@@ -13,7 +13,16 @@ const messageHistory: {
 
 app.prepare().then(() => {
   const httpServer = createServer(handle);
-  const io = new Server(httpServer);
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "https://chat-app-delta-jet.vercel.app",
+      methods: ["GET", "POST"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+      credentials: true,
+    },
+  });
+  // allowedHeaders: ["Content-Type"],
+  // credentials: true,
 
   io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
@@ -41,6 +50,14 @@ app.prepare().then(() => {
         `User ${username} joined room ${room} at ${formattedJoinTime}`
       );
 
+
+      socket.on("get_room_size", (room, callback) => {
+        const roomSize = io.sockets.adapter.rooms.get(room)?.size || 0;
+        callback(roomSize);
+      })
+
+       
+
       // Send message history to the new user
       if (messageHistory[room]) {
         socket.emit("message_history", messageHistory[room]);
@@ -55,6 +72,8 @@ app.prepare().then(() => {
           `User "${username}" joined the room "${room}" at ${formattedJoinTime}`
         );
     });
+
+    
 
     socket.on("message", ({ room, message, sender, timestamp }) => {
       console.log(

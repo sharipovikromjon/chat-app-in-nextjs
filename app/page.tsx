@@ -10,11 +10,20 @@ export default function Home() {
   const [userName, setUserName] = useState("");
   const [joined, setJoined] = useState(false);
 
+  // number of joined users
+  const [roomSize, setRoomSize] = useState(0);
+
   // State for joined rooms and messages
   const [joinedRooms, setJoinedRooms] = useState<string[]>([]);
   const [messages, setMessages] = useState<
     { sender: string; message: string; timestamp: string }[]
   >([]);
+
+  useEffect(() => {
+    if(joined && room) {
+      socket.emit("get_room_size", room, (size: number) => setRoomSize(size))
+    }
+  })
 
   // Load previously joined rooms from local storage
   useEffect(() => {
@@ -181,6 +190,10 @@ export default function Home() {
                       <p className="text-[#00A3FF]">Online</p>
                     </div>
                   </div>
+                        <p className="text-[#fff] text-[18px]">
+                        {roomSize} user{roomSize !== 1 ? "s" : ""} joined
+                        </p>
+
                   <p className="text-[#434343] text-[20px]">
                     Room:{" "}
                     <span className="text-[#f0f0f0] text-[18px]">{room}</span>
