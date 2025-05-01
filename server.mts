@@ -17,7 +17,7 @@ app.prepare().then(() => {
   const httpServer = createServer(handle);
   const io = new Server(httpServer, {
     cors: {
-      origin: "https://chat-app-delta-jet.vercel.app",
+      origin: "https://chat-app-mrno.onrender.com",
       methods: ["GET", "POST"],
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
