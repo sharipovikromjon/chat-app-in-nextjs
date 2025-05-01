@@ -11,6 +11,8 @@ const messageHistory: {
   [key: string]: { sender: string; message: string; timestamp: string }[];
 } = {};
 
+const roomUsers: { [key: string]: Set<string> } = {};
+
 app.prepare().then(() => {
   const httpServer = createServer(handle);
   const io = new Server(httpServer, {
@@ -27,6 +29,13 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
     socket.on("join-room", ({ room, username }) => {
+      if(!roomUsers[room]) {
+        roomUsers[room] = new Set();
+      }
+      roomUsers[room].add(username);
+      const roomSize = roomUsers[room].size;
+      io.to(room).emit("room_size_updated", roomSize);
+      io.to(room).emit("joined_users_updated", Array.from(roomUsers[room]));
       const joinTime = new Date();
 
       // Format the join time to "HH:MM:SS | DD/MM/YYYY"
@@ -49,14 +58,12 @@ app.prepare().then(() => {
       console.log(
         `User ${username} joined room ${room} at ${formattedJoinTime}`
       );
-
+      console.log(`Emitting joined_users_updated: ${Array.from(roomUsers[room])}`);
 
       socket.on("get_room_size", (room, callback) => {
         const roomSize = io.sockets.adapter.rooms.get(room)?.size || 0;
         callback(roomSize);
-      })
-
-       
+      });
 
       // Send message history to the new user
       if (messageHistory[room]) {
@@ -69,11 +76,9 @@ app.prepare().then(() => {
         .to(room)
         .emit(
           "user_joined",
-          `User "${username}" joined the room "${room}" at ${formattedJoinTime}`
+          `User "${username}" joined the room "${room}" at ${formattedJoinTime}.`
         );
     });
-
-    
 
     socket.on("message", ({ room, message, sender, timestamp }) => {
       console.log(
