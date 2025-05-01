@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import ChatForm from "@/components/ChatForm";
 import ChatMessage from "@/components/ChatMessage";
 import { socket } from "@/lib/socketClient";
@@ -13,6 +13,9 @@ export default function Home() {
   // number of joined users
   const [roomSize, setRoomSize] = useState(0);
 
+  // State for joined users
+  const [joinedUsers, setJoinedUsers] = useState<string[]>([]);
+
   // State for joined rooms and messages
   const [joinedRooms, setJoinedRooms] = useState<string[]>([]);
   const [messages, setMessages] = useState<
@@ -20,10 +23,23 @@ export default function Home() {
   >([]);
 
   useEffect(() => {
-    if(joined && room) {
-      socket.emit("get_room_size", room, (size: number) => setRoomSize(size))
+    const handleJoinedUsersUpdate = (users: string[]) => {
+      console.log("Received joined users update:", users);
+      setJoinedUsers(users);
+    };
+    socket.on("joined_users_updated", handleJoinedUsersUpdate);
+
+    return () => {
+      socket.off("joined_users_updated", handleJoinedUsersUpdate);
+    };
+  }, []);
+  console.log(joinedUsers);
+
+  useEffect(() => {
+    if (joined && room) {
+      socket.emit("get_room_size", room, (size: number) => setRoomSize(size));
     }
-  })
+  });
 
   // Load previously joined rooms from local storage
   useEffect(() => {
@@ -145,8 +161,8 @@ export default function Home() {
               ))}
             </ul>
           </div>
-          {/* Right Section: Chat Interface */}
-          <div className="flex-1 flex flex-col w-[1236px]">
+          {/* Chat Interface */}
+          <div className="flex-1 flex flex-col w-[936px]">
             {!joined ? (
               <div className="flex w-full max-w-3xl mx-auto flex-col items-center bg-white p-8 rounded-lg shadow-lg mt-20">
                 <h1 className="mb-4 text-2xl font-bold">Join a Room</h1>
@@ -190,9 +206,10 @@ export default function Home() {
                       <p className="text-[#00A3FF]">Online</p>
                     </div>
                   </div>
-                        <p className="text-[#fff] text-[18px]">
-                        {roomSize} user{roomSize !== 1 ? "s" : ""} joined
-                        </p>
+                  <p className="text-[#fff] text-[18px]">
+                    {roomSize} user{roomSize !== 1 ? "s" : ""}{" "}
+                    <span className="text-[#00A3FF]">online</span>
+                  </p>
 
                   <p className="text-[#434343] text-[20px]">
                     Room:{" "}
@@ -219,6 +236,22 @@ export default function Home() {
                 </div>
               </div>
             )}
+          </div>
+          {/* Right Sidebar: Joined users */}
+          <div className="bg-[#121212] w-[300px] p-4">
+            <h2 className="text-xl font-bold mb-4 text-[#fff] py-[20px]">
+              All Joined Users
+            </h2>
+            <ul className="space-y-2">
+              {joinedUsers.map((user, index) => (
+                <li
+                  key={index}
+                  className="p-2 rounded-lg bg-gray-800 text-white"
+                >
+                  {user}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       )}
