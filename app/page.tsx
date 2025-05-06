@@ -9,13 +9,10 @@ export default function Home() {
   const [room, setRoom] = useState("");
   const [userName, setUserName] = useState("");
   const [joined, setJoined] = useState(false);
-
   // number of joined users
   const [roomSize, setRoomSize] = useState(0);
-
   // State for joined users
   const [joinedUsers, setJoinedUsers] = useState<string[]>([]);
-
   // State for joined rooms and messages
   const [joinedRooms, setJoinedRooms] = useState<string[]>([]);
   const [messages, setMessages] = useState<
@@ -41,28 +38,7 @@ export default function Home() {
     }
   });
 
-  // Load previously joined rooms from local storage
-  // useEffect(() => {
-  //   const storedRooms = localStorage.getItem("joinedRooms");
-  //   if (storedRooms) {
-  //     setJoinedRooms(JSON.parse(storedRooms));
-  //   }
-  // }, []);
-
-  // // Save joined rooms to local storage when the component updates
-  // useEffect(() => {
-  //   localStorage.setItem("joinedRooms", JSON.stringify(joinedRooms));
-  // }, [joinedRooms]);
-
   // Handle joining a room
-  // const handleJoinRoom = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (userName && room) {
-  //     socket.emit("join-room", { room, username: userName });
-  //     setJoined(true);
-  //     setJoinedRooms((prev) => [...new Set([...prev, room])]);
-  //   }
-  // };
   const handleJoinRoom = () => {
     if (room && userName) {
       socket.emit("join-room", { room, username: userName });
@@ -86,7 +62,6 @@ export default function Home() {
     socket.emit("message", data);
   };
 
-  // Option 1
   useEffect(() => {
     socket.on("message_history", (data) => {
       setMessages(data);
@@ -120,7 +95,7 @@ export default function Home() {
       setMessages([]);
     }
   };
-  // -------------------------------------------------------
+
   return (
     <div className="flex h-screen">
       {!joined ? (
@@ -159,7 +134,7 @@ export default function Home() {
         </div>
       ) : (
         <div className="flex h-screen">
-          {/* Left Sidebar: Room List */}
+          {/* Left Sidebar: rooms list */}
           <div className="w-[300px] bg-[#121212] text-white p-4">
             <h2 className="text-xl font-bold mb-4">Rooms you joined</h2>
             <ul className="space-y-2">
@@ -255,7 +230,7 @@ export default function Home() {
               </div>
             )}
           </div>
-          {/* Right Sidebar: Joined users */}
+          {/* Right Sidebar: all joined users */}
           <div className="bg-[#121212] w-[300px] p-4">
             <h2 className="text-xl font-bold mb-4 text-[#fff] py-[20px]">
               All Joined Users
