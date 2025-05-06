@@ -42,26 +42,40 @@ export default function Home() {
   });
 
   // Load previously joined rooms from local storage
-  useEffect(() => {
-    const storedRooms = localStorage.getItem("joinedRooms");
-    if (storedRooms) {
-      setJoinedRooms(JSON.parse(storedRooms));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedRooms = localStorage.getItem("joinedRooms");
+  //   if (storedRooms) {
+  //     setJoinedRooms(JSON.parse(storedRooms));
+  //   }
+  // }, []);
 
-  // Save joined rooms to local storage when the component updates
-  useEffect(() => {
-    localStorage.setItem("joinedRooms", JSON.stringify(joinedRooms));
-  }, [joinedRooms]);
+  // // Save joined rooms to local storage when the component updates
+  // useEffect(() => {
+  //   localStorage.setItem("joinedRooms", JSON.stringify(joinedRooms));
+  // }, [joinedRooms]);
 
   // Handle joining a room
-  const handleJoinRoom = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (userName && room) {
+  // const handleJoinRoom = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (userName && room) {
+  //     socket.emit("join-room", { room, username: userName });
+  //     setJoined(true);
+  //     setJoinedRooms((prev) => [...new Set([...prev, room])]);
+  //   }
+  // };
+  const handleJoinRoom = () => {
+    if (room && userName) {
       socket.emit("join-room", { room, username: userName });
-      setJoined(true);
-      setJoinedRooms((prev) => [...new Set([...prev, room])]);
+
+      // update the joinedRooms state for the current user
+      setJoinedRooms((prevRooms) => {
+        if (!prevRooms.includes(room)) {
+          return [...prevRooms, room];
+        }
+        return prevRooms;
+      });
     }
+    setJoined(true);
   };
 
   // Handle sending a message
@@ -110,34 +124,38 @@ export default function Home() {
   return (
     <div className="flex h-screen">
       {!joined ? (
-        <div className="flex w-full max-w-3xl mx-auto flex-col items-center bg-white p-8 rounded-lg shadow-lg">
-          <h1 className="mb-4 text-2xl font-bold">Join a Room</h1>
-          {/* username */}
-          <input
-            id="username"
-            name="username"
-            type="text"
-            placeholder="Enter your username"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            className="w-64 px-4 py-2 mb-4 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* room */}
-          <input
-            id="room"
-            name="room"
-            type="text"
-            placeholder="Enter room name"
-            value={room}
-            onChange={(e) => setRoom(e.target.value)}
-            className="w-64 px-4 py-2 mb-5 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            onClick={handleJoinRoom}
-            className="px-4 py-2  bg-[#00A3FF] text-white rounded-lg hover:bg-black transition linear duration-400"
-          >
-            Join Room
-          </button>
+        <div className="w-[500px] h-[400px] bg-[#000] rounded-[5px] mx-auto mt-[80px]">
+          <h1 className="text-[#fff] text-[24px] pt-[50px] font-[800] mb-[30px] text-center">
+            Join a Room
+          </h1>
+          <form className="flex flex-col gap-y-[25px]">
+            {/* username */}
+            <input
+              id="username"
+              name="username"
+              type="text"
+              placeholder="Enter your username"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              className="w-[420px] h-[50px] bg-[#EFF3F8] rounded-[5px] text-[#000] mx-auto py-[10px] px-[20px]"
+            />
+            {/* room */}
+            <input
+              id="room"
+              name="room"
+              type="text"
+              placeholder="Enter room name"
+              value={room}
+              onChange={(e) => setRoom(e.target.value)}
+              className="w-[420px] h-[50px]  bg-[#EFF3F8] rounded-[5px] text-[#000]mb-[50px] mx-auto py-[10px] px-[20px]"
+            />
+            <button
+              onClick={handleJoinRoom}
+              className="bg-[#1FBA4A] text-[#fff] w-[420px] h-[50px] rounded-[6px] text-center py-[14px] mx-auto"
+            >
+              Join Room
+            </button>
+          </form>
         </div>
       ) : (
         <div className="flex h-screen">
