@@ -35,7 +35,16 @@ const ChatMessage = ({
             <div className="flex gap-x-[16px] items-center">
               <p className="text-sm font-bold text-[#DADADA]">{sender}</p>
               <p className="text-[#A0A0A0] text-[12px]">
-                {new Date(timestamp).toLocaleString()}
+                {new Date(timestamp)
+                  .toLocaleString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })
+                  .toUpperCase()}
               </p>
             </div>
           )}

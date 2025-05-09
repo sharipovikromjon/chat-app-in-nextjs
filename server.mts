@@ -17,49 +17,38 @@ app.prepare().then(() => {
   const httpServer = createServer(handle);
   const io = new Server(httpServer, {
     cors: {
-      origin: "https://chat-app-delta-jet.vercel.app",
+      origin: "https://chat-app-mrno.onrender.com",
       methods: ["GET", "POST"],
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
     },
   });
-  // allowedHeaders: ["Content-Type"],
-  // credentials: true,
 
   io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
     socket.on("join-room", ({ room, username }) => {
-      if(!roomUsers[room]) {
+      if (!roomUsers[room]) {
         roomUsers[room] = new Set();
       }
       roomUsers[room].add(username);
       const roomSize = roomUsers[room].size;
-      io.to(room).emit("room_size_updated", roomSize);
+      // io.to(room).emit("room_size_updated", roomSize);
       io.to(room).emit("joined_users_updated", Array.from(roomUsers[room]));
+      socket.emit("joined_users_updated", Array.from(roomUsers[room]));
+      socket.join(room);
       const joinTime = new Date();
-
       // Format the join time to "HH:MM:SS | DD/MM/YYYY"
       const formattedJoinTime =
-        joinTime.toLocaleString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        }) +
-        " | " +
-        joinTime.toLocaleDateString("en-US", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        });
+        joinTime.toLocaleString("en-GB", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                }).toUpperCase()
 
-      socket.join(room);
       socket.data = { room, username, joinTime: formattedJoinTime };
-      console.log(
-        `User ${username} joined room ${room} at ${formattedJoinTime}`
-      );
-      console.log(`Emitting joined_users_updated: ${Array.from(roomUsers[room])}`);
-
       socket.on("get_room_size", (room, callback) => {
         const roomSize = io.sockets.adapter.rooms.get(room)?.size || 0;
         callback(roomSize);
@@ -76,7 +65,7 @@ app.prepare().then(() => {
         .to(room)
         .emit(
           "user_joined",
-          `User "${username}" joined the room "${room}" at ${formattedJoinTime}.`
+          `User "${username}" joined the room "${room}" at ${formattedJoinTime}`
         );
     });
 
