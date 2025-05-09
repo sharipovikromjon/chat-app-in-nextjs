@@ -99,6 +99,7 @@ export default function Home() {
   return (
     <div className="flex h-screen">
       {!joined ? (
+        // Join Room Form - if not joined
         <div className="w-[500px] h-[400px] bg-[#000] rounded-[5px] mx-auto mt-[80px]">
           <h1 className="text-[#fff] text-[24px] pt-[50px] font-[800] mb-[30px] text-center">
             Join a Room
@@ -134,7 +135,7 @@ export default function Home() {
         </div>
       ) : (
         <div className="flex h-screen">
-          {/* Left Sidebar: rooms list */}
+          {/* Left Sidebar: joined rooms */}
           <div className="w-[300px] bg-[#121212] text-white p-4">
             <h2 className="text-xl font-bold mb-4">Rooms you joined</h2>
             <ul className="space-y-2">
@@ -154,83 +155,47 @@ export default function Home() {
               ))}
             </ul>
           </div>
-          {/* Chat Interface */}
+          {/* Main Chat Area */}
           <div className="flex-1 flex flex-col w-[936px]">
-            {!joined ? (
-              <div className="flex w-full max-w-3xl mx-auto flex-col items-center bg-white p-8 rounded-lg shadow-lg mt-20">
-                <h1 className="mb-4 text-2xl font-bold">Join a Room</h1>
-                {/* Username Input */}
-                <input
-                  id="message"
-                  name="message"
-                  type="text"
-                  placeholder="Enter your username"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  className="w-64 px-4 py-2 mb-4 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {/* Room Input */}
-                <input
-                  id="room"
-                  name="room"
-                  type="text"
-                  placeholder="Enter room name"
-                  value={room}
-                  onChange={(e) => setRoom(e.target.value)}
-                  className="w-64 px-4 py-2 mb-5 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                  onClick={handleJoinRoom}
-                  className="px-4 py-2 bg-[#00A3FF] text-white rounded-lg hover:bg-black transition linear duration-400"
-                >
-                  Join Room
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col h-full">
-                {/* User Info Header */}
-                <div className="flex items-center justify-between bg-[#121212] py-[18px] px-[46px] border-b-[1px] border-[#303030]">
-                  <div className="flex items-center gap-x-[18px]">
-                    <div className="w-[58px] h-[58px] rounded-[58px] border-[1px] border-[#434343]"></div>
-                    <div className="flex flex-col gap-y-[3px]">
-                      <h1 className="text-[#F0F0F0] text-[20px] font-[500px]">
-                        {userName}
-                      </h1>
-                      <p className="text-[#00A3FF]">Online</p>
-                    </div>
-                  </div>
-                  <p className="text-[#fff] text-[18px]">
-                    {roomSize} user{roomSize !== 1 ? "s" : ""}{" "}
-                    <span className="text-[#00A3FF]">online</span>
-                  </p>
-
-                  <p className="text-[#434343] text-[20px]">
-                    Room:{" "}
-                    <span className="text-[#f0f0f0] text-[18px]">{room}</span>
-                  </p>
-                </div>
-
-                {/* Chat Messages */}
-                <div className="flex-1 overflow-y-auto p-4 bg-[#181818]">
-                  {messages.map((msg, index) => (
-                    <ChatMessage
-                      key={index}
-                      sender={msg.sender}
-                      message={msg.message}
-                      isOwnMessage={msg.sender === userName}
-                      timestamp={msg.timestamp}
-                    />
-                  ))}
-                </div>
-
-                {/* Chat Form */}
-                <div className="bg-[#121212] border-t border-[#303030]">
-                  <ChatForm onSendMessage={handleSendMessage} />
+            {/* Chat Header */}
+            <div className="flex items-center justify-between bg-[#121212] py-[18px] px-[46px] border-b-[1px] border-[#303030]">
+              <div className="flex items-center gap-x-[18px]">
+                <div className="w-[58px] h-[58px] rounded-[58px] border-[1px] border-[#434343]"></div>
+                <div className="flex flex-col gap-y-[3px]">
+                  <h1 className="text-[#F0F0F0] text-[20px] font-[500px]">
+                    {userName}
+                  </h1>
+                  <p className="text-[#00A3FF]">Online</p>
                 </div>
               </div>
-            )}
+              <p className="text-[#fff] text-[18px]">
+                {roomSize} user{roomSize !== 1 ? "s" : ""}{" "}
+                <span className="text-[#00A3FF]">online</span>
+              </p>
+
+              <p className="text-[#434343] text-[20px]">
+                Room: <span className="text-[#f0f0f0] text-[18px]">{room}</span>
+              </p>
+            </div>
+            {/* Chat Messages Area */}
+            <div className="flex-1 overflow-y-auto p-4 bg-[#181818]">
+              {messages.map((msg, index) => (
+                <ChatMessage
+                  key={index}
+                  sender={msg.sender}
+                  message={msg.message}
+                  isOwnMessage={msg.sender === userName}
+                  timestamp={msg.timestamp}
+                />
+              ))}
+            </div>
+            {/* Chat Form */}
+            <div className="bg-[#121212] border-t border-[#303030]">
+              <ChatForm onSendMessage={handleSendMessage} />
+            </div>
           </div>
-          {/* Right Sidebar: all joined users */}
+
+          {/* Right Sidebar: joined users */}
           <div className="bg-[#121212] w-[300px] p-4">
             <h2 className="text-xl font-bold mb-4 text-[#fff] py-[20px]">
               All Joined Users
