@@ -16,21 +16,21 @@ const ChatForm = ({
   };
   return (
     <form
-      className="flex flex-col py-[22px] px-[46px] bg-[#121212] border-t border-[#303030] sm:flex-row sm:gap-2 "
+      className="flex flex-col py-[20px]  px-[46px] bg-[#fff] border-t border-[#303030] sm:flex-row sm:gap-2 "
       onSubmit={handleSubmit}
     >
       <input
         id="messages"
         name="messages"
-        className="flex-1 text-[#fff] font-[24px] px-4 py-2  mb-2 rounded-lg focus:outline-none sm:mb-0 sm:w-auto"
+        className="flex-1 bg-[#F7F7FD]  rounded-[20px] text-[#000] font-[24px] mb-2 py-[20px] px-[26px] focus:outline sm:mb-0 sm:w-auto"
         onChange={(e) => setMessage(e.target.value)}
         value={message}
         type="text"
-        placeholder="Type message..."
+        placeholder="Type your message"
       />
 
       <button
-        className="bg-[#00A3FF] text-white px-[18px] py-[11px] rounded-[12px] w-full sm:w-auto hover:bg-white hover:text-[#121212] transition linear duration-400"
+        className="bg-[#2E3B5B] text-white font-[600] py-[10px] px-[20px] rounded-[10px] w-[54px] sm:w-auto hover:bg-[#0CAF60] transition linear duration-400"
         type="submit"
       >
         Send

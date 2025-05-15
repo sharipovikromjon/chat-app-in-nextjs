@@ -21,7 +21,6 @@ export default function Home() {
 
   useEffect(() => {
     const handleJoinedUsersUpdate = (users: string[]) => {
-      console.log("Received joined users update:", users);
       setJoinedUsers(users);
     };
     socket.on("joined_users_updated", handleJoinedUsersUpdate);
@@ -30,7 +29,6 @@ export default function Home() {
       socket.off("joined_users_updated", handleJoinedUsersUpdate);
     };
   }, []);
-  console.log(joinedUsers);
 
   useEffect(() => {
     if (joined && room) {
@@ -95,6 +93,7 @@ export default function Home() {
       setMessages([]);
     }
   };
+  console.log(joinedRooms);
 
   return (
     <div className="flex h-screen">
@@ -136,49 +135,89 @@ export default function Home() {
       ) : (
         <div className="flex h-screen">
           {/* Left Sidebar: joined rooms */}
-          <div className="w-[300px] bg-[#121212] text-white p-4">
-            <h2 className="text-xl font-bold mb-4">Rooms you joined</h2>
-            <ul className="space-y-2">
+          <div className="w-[300px] bg-[#fff] text-white p-4">
+            <h2 className="text-[24px] font-[600] leading-[36px] text-[#000929] py-[20px] mb-[10px]">
+              Rooms you joined
+            </h2>
+            <ul className="flex flex-col gap-y-[8px]">
               {/* Rooms a user joined */}
               {joinedRooms.map((joinedRoom, index) => (
                 <li
                   key={index}
-                  className={`p-2 rounded-lg cursor-pointer ${
-                    joinedRoom === room
-                      ? "bg-blue-500 text-white"
-                      : "bg-[#e1e1e] hover:bg-[#2e2e2e]"
+                  className={`p-[20px] flex items-center gap-x-[40px] rounded-[4px] ${
+                    joinedRoom === room ? "bg-[#000929]" : "bg-amber-50"
                   }`}
                   onClick={() => handleRoomClick(joinedRoom)}
                 >
-                  {joinedRoom}
+                  <img
+                    src="/images/white-door.png"
+                    alt="Door Icon"
+                    className="w-[24px] h-[24px] cursor-pointer"
+                    onClick={() => handleRoomClick(joinedRoom)}
+                  />
+
+                  <p
+                    className={`text-[16px] font-[400] leading-[24px] ${
+                      joinedRoom === room ? "text-[#F7F7FD]" : "text-[#7B7F9E]"
+                    }`}
+                  >
+                    {joinedRoom}
+                  </p>
                 </li>
               ))}
+              <li
+                className={`p-[20px] flex items-center gap-x-[40px] rounded-[4px] bg-[#f5f5f5]`}
+              >
+                <img
+                  src="/images/black-door.png"
+                  alt="Door Icon"
+                  className="w-[24px] h-[24px] cursor-pointer"
+                />
+
+                <p
+                  className={`text-[#7B7F9E] text-[16px] font-[400] leading-[24px]`}
+                >
+                  room-name
+                </p>
+              </li>
             </ul>
           </div>
           {/* Main Chat Area */}
-          <div className="flex-1 flex flex-col w-[936px]">
-            {/* Chat Header */}
-            <div className="flex items-center justify-between bg-[#121212] py-[18px] px-[46px] border-b-[1px] border-[#303030]">
+          <div className="flex-1 flex flex-col w-[936px] border-l-[1px] border-r-[1px] border-[#434343]">
+            {/* Chat Header</div> */}
+            <div className="flex items-center justify-between bg-[#fff] py-[18px] px-[46px] border-b-[1px] border-[#303030]">
               <div className="flex items-center gap-x-[18px]">
-                <div className="w-[58px] h-[58px] rounded-[58px] border-[1px] border-[#434343]"></div>
-                <div className="flex flex-col gap-y-[3px]">
-                  <h1 className="text-[#F0F0F0] text-[20px] font-[500px]">
-                    {userName}
+                <img
+                  src="/images/user-icon.png"
+                  alt="user avatar"
+                  className="w-[58px] h-[58px] rounded-full border-[1px] border-[#434343]"
+                />
+                <div className="flex flex-col">
+                  <h1 className="text-[#000929] ml-[5px] text-[18px] tracking-[1px] font-[600px] leading-[24px] mb-[8px]">
+                    {userName}{" "}
+                    {userName === "Ikromjon" ? (
+                      <span className="text-[#BABABA] text-[14px] font-[500] ">
+                        (owner)
+                      </span>
+                    ) : (
+                      <span className="text-[#BABABA] ">(user)</span>
+                    )}
                   </h1>
-                  <p className="text-[#00A3FF]">Online</p>
+                  <div className="flex items-center">
+                    <img src="/online-icon.svg" alt="icon" />
+                    <p className="text-[#BABABA] text-[14px] font-[500]">
+                      Online
+                    </p>
+                  </div>
                 </div>
               </div>
-              <p className="text-[#fff] text-[18px]">
-                {roomSize} user{roomSize !== 1 ? "s" : ""}{" "}
-                <span className="text-[#00A3FF]">online</span>
-              </p>
 
               <p className="text-[#434343] text-[20px]">
-                Room: <span className="text-[#f0f0f0] text-[18px]">{room}</span>
+                Room: <span className="text-[#969696] text-[18px]">{room}</span>
               </p>
             </div>
             {/* Chat Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 bg-[#181818]">
+            <div className="flex-1 overflow-y-auto p-4 bg-[#fff]">
               {messages.map((msg, index) => (
                 <ChatMessage
                   key={index}
@@ -190,23 +229,48 @@ export default function Home() {
               ))}
             </div>
             {/* Chat Form */}
-            <div className="bg-[#121212] border-t border-[#303030]">
+            <div className="bg-[#fff] border-t border-[#303030]">
               <ChatForm onSendMessage={handleSendMessage} />
             </div>
           </div>
 
           {/* Right Sidebar: joined users */}
-          <div className="bg-[#121212] w-[300px] p-4">
-            <h2 className="text-xl font-bold mb-4 text-[#fff] py-[20px]">
-              All Joined Users
-            </h2>
-            <ul className="space-y-2">
+          <div className="bg-[#fff] w-[300px] p-4">
+            <div className="flex items-center gap-x-[50px]">
+              <div className="group relative inline-block">
+                <h2 className="text-[24px] font-[600] leading-[36px] text-[#000929] py-[20px] mb-[10px] cursor-help">
+                  Total: 4
+                </h2>
+                {/* Tooltip text */}
+                <span className="absolute bottom-[0%] left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block px-3 py-1 bg-gray-800 text-white text-sm rounded-md shadow-md z-10 whitespace-nowrap">
+                  not dynamic count
+                </span>
+              </div>
+              <div className="relative inline-block group">
+                <h2 className="text-[#76767C] text-[24px] font-[600] leading-[36px] py-[20px] mb-[10px] cursor-help">
+                  <span className="text-[#0CAF60]">online: </span>
+                  {roomSize}
+                </h2>
+                {/* Tooltip text */}
+                <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block px-3 py-1 bg-gray-800 text-white text-sm rounded-md shadow-md z-10 whitespace-nowrap">
+                  {`${roomSize} user${roomSize !== 1 ? "s" : ""} online`}
+                </span>
+              </div>
+            </div>
+            <ul className="flex flex-col gap-y-[8px]">
               {joinedUsers.map((user, index) => (
                 <li
                   key={index}
-                  className="p-2 rounded-lg bg-gray-800 text-white"
+                  className="flex gap-x-[12px] py-[10px] px-[20px] bg-[#F7F7FD] rounded-[10px] border-[0.3px] solid"
                 >
-                  {user}
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${user}&background=random`}
+                    alt={`${user}'s avatar`}
+                    className="w-[40px] h-[40px] rounded-full mr-[10px]"
+                  />
+                  <p className="text-[#000929] text-[14px] font-[500] leading-[21px]">
+                    {user}
+                  </p>
                 </li>
               ))}
             </ul>

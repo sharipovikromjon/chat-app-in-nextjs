@@ -25,15 +25,34 @@ const ChatMessage = ({
           : "justify-start"
       } `}
     >
-      {!isOwnMessage && (
-        <div className="w-[50px] h-[50px] bg-[#fff] border border-[#4E4E4E] rounded-[50px]"></div>
-      )}
       {/* Username and timestamp or system message */}
       <div className="flex flex-col gap-y-[12px]">
         <>
           {!isSystemMessage && (
-            <div className="flex gap-x-[16px] items-center">
-              <p className="text-sm font-bold text-[#DADADA]">{sender}</p>
+            <p
+              className={`text-sm font-bold text-[#76767C] tracking-[0.3px] mt-[20px] ${
+                isOwnMessage && "text-right"
+              }`}
+            >
+              {sender}
+            </p>
+          )}
+        </>
+        {/* User's message or system message */}
+        {isOwnMessage && (
+          <div>
+            <div
+              className={`flex items-center px-[12px] py-[8px] border border-[#323232] mb-[10px] ${
+                isSystemMessage
+                  ? "bg-black text-white text-center text-xs rounded-xl"
+                  : isOwnMessage
+                  ? "bg-[#2E3B5B] rounded-tl-xl rounded-br-xl rounded-bl-xl"
+                  : "bg-[#000929] rounded-tl-xl rounded-br-xl rounded-bl-xl"
+              }`}
+            >
+              <p className="text-white">{message}</p>
+            </div>
+            {!isSystemMessage && (
               <p className="text-[#A0A0A0] text-[12px]">
                 {new Date(timestamp)
                   .toLocaleString("en-GB", {
@@ -46,42 +65,40 @@ const ChatMessage = ({
                   })
                   .toUpperCase()}
               </p>
-            </div>
-          )}
-        </>
-        {/* User's message or system message */}
-        {isOwnMessage && (
-          <div
-            className={`flex items-center px-[14px] py-[8px] rounded-tl-xl rounded-br-xl rounded-bl-xl border border-[#323232] bg-[#292929] ${
-              isSystemMessage
-                ? "bg-black text-white text-center text-xs"
-                : isOwnMessage
-                ? "bg-[#292929] text-white"
-                : "bg-blue-400 text-white "
-            }`}
-          >
-            <p>{message}</p>
+            )}
           </div>
         )}
         {/* Other user's message */}
         {!isOwnMessage && (
-          <div
-            className={`flex items-center px-[14px] py-[8px] rounded-tr-xl rounded-br-xl rounded-bl-xl border border-[#323232] bg-[#292929] ${
-              isSystemMessage
-                ? "bg-black text-white text-center text-xs"
-                : isOwnMessage
-                ? "bg-[#292929] text-white"
-                : "bg-blue-400 text-white "
-            }`}
-          >
-            <p>{message}</p>
+          <div>
+            <div
+              className={`flex items-center px-[14px] py-[8px]  border border-[#323232] mb-[10px] ${
+                isSystemMessage
+                  ? "bg-black text-center text-xs rounded-xl"
+                  : isOwnMessage
+                  ? "bg-[#000929] rounded-tr-xl rounded-br-xl rounded-bl-xl"
+                  : "bg-[#2E3B5B] rounded-tr-xl rounded-br-xl rounded-bl-xl"
+              }`}
+            >
+              <p className="text-white">{message}</p>
+            </div>
+            {!isSystemMessage && (
+              <p className="text-[#A0A0A0] text-[12px]">
+                {new Date(timestamp)
+                  .toLocaleString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })
+                  .toUpperCase()}
+              </p>
+            )}
           </div>
         )}
       </div>
-      {/* User's avatar */}
-      {isOwnMessage && (
-        <div className="w-[50px] h-[50px] bg-[#fff] border border-[#4E4E4E] rounded-[50px]"></div>
-      )}
     </div>
   );
 };
