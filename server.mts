@@ -32,7 +32,7 @@ app.prepare().then(() => {
       }
       roomUsers[room].add(username);
       const roomSize = roomUsers[room].size;
-      // io.to(room).emit("room_size_updated", roomSize);
+      io.to(room).emit("room_size_updated", roomSize);
       io.to(room).emit("joined_users_updated", Array.from(roomUsers[room]));
       socket.emit("joined_users_updated", Array.from(roomUsers[room]));
       socket.join(room);
@@ -65,7 +65,7 @@ app.prepare().then(() => {
         .to(room)
         .emit(
           "user_joined",
-          `User "${username}" joined the room "${room}" at ${formattedJoinTime}`
+          `${username} joined at ${formattedJoinTime}`
         );
     });
 
